@@ -1,3 +1,12 @@
+PLUMgrid iovisor source code
+
+* net/ - kernel module
+
+* compat/ - compatiblity code for older kernels
+
+* bld/ - .ko build
+
+
 Distributed bridge demo using BPF programs
 
 * test_l2ls.sh - demonstrates L2 learning switch functionality defining a Topology with two Linux
