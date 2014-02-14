@@ -57,7 +57,7 @@ static int addbr(int argc, char *const* argv)
 		return ret;
 	}
 
-	if (tunnel_plum_id != 1) {
+	if (tunnel_plum_id != 2) {
 		printf("register_plum(tun) failed: plum_id %d\n", tunnel_plum_id);
 		unregister_plum(tunnel_plum_id);
 		return -1;
@@ -71,7 +71,7 @@ static int addbr(int argc, char *const* argv)
 		return ret;
 	}
 
-	if (bridge_plum_id != 2) {
+	if (bridge_plum_id != 3) {
 		printf("register_plum(bridge) failed: plum_id %d\n", bridge_plum_id);
 		unregister_plum(bridge_plum_id);
 		return -1;
@@ -83,18 +83,18 @@ static int addbr(int argc, char *const* argv)
 static int delbr(int argc, char *const* argv)
 {
 	int ret;
-	int plum_id = 2;
+	int plum_id = 3;
 
 	ret = unregister_plum(plum_id);
 	if (ret) {
-		printf("unregister_plum(2) failed: %s\n", strerror(-ret));
+		printf("unregister_plum(3) failed: %s\n", strerror(-ret));
 		//ignore error
 	}
 
-	plum_id = 1;
+	plum_id = 2;
 	ret = unregister_plum(plum_id);
 	if (ret) {
-		printf("unregister_plum(1) failed: %s\n", strerror(-ret));
+		printf("unregister_plum(2) failed: %s\n", strerror(-ret));
 		//ignore error
 	}
 
@@ -117,8 +117,8 @@ static int addtun(int argc, char *const* argv)
 	uint32_t tunnel_id = 0;
 	const char *dev_name;
 	int portno = 0;
-	int tun_plum_id = 1;
-	int br_plum_id = 2;
+	int tun_plum_id = 2;
+	int br_plum_id = 3;
 	port2tun_key p2t_key = {};
 	port2tun_leaf p2t_leaf = {};
 	tun2port_key t2p_key = {};
@@ -213,7 +213,7 @@ static int addtun(int argc, char *const* argv)
 static int addmac(int argc, char *const* argv)
 {
 	int ret;
-	int plum_id = 2;
+	int plum_id = 3;
 	l2_key l2key = {};
 	l2_config l2config = {};
 	uint8_t mac[ETHER_ADDR_LEN];
@@ -247,7 +247,7 @@ static int addmac(int argc, char *const* argv)
 static int delmac(int argc, char *const* argv)
 {
 	int ret;
-	int plum_id = 2;
+	int plum_id = 3;
 	l2_key l2key = {};
 	uint8_t mac[ETHER_ADDR_LEN];
 
@@ -264,7 +264,7 @@ static int delmac(int argc, char *const* argv)
 static void show_stats(int port_id)
 {
 	struct ovs_bpf_port_stats stats;
-	int plum_id = 2;
+	int plum_id = 3;
 	int ret;
 
 	ret = read_port_stats(plum_id, port_id, &stats);
@@ -281,7 +281,7 @@ static void show_stats(int port_id)
 }
 static int showmac(int argc, char *const* argv)
 {
-	int plum_id = 2;
+	int plum_id = 3;
 	l2_key l2key = {};
 	uint8_t mac[ETHER_ADDR_LEN];
 	uint8_t *read, *curr;
@@ -336,7 +336,7 @@ static int showmac(int argc, char *const* argv)
 static int clearmac(int argc, char *const* argv)
 {
 	int ret;
-	int plum_id = 2;
+	int plum_id = 3;
 
 	ret = clear_elements(plum_id, 0);
 	if (ret) {
@@ -350,7 +350,7 @@ static int clearmac(int argc, char *const* argv)
 static int addif(int argc, char *const* argv)
 {
 	int ret;
-	int plum_id = 2;
+	int plum_id = 3;
 	int portno = 0;
 	port_key pkey = {};
 	port_config pconfig = {};
@@ -401,7 +401,7 @@ static int delif(int argc, char *const* argv)
 {
 	int ret;
 	int portno = 0;
-	int plum_id = 2;
+	int plum_id = 3;
 
 	ret = lookup_port(argv[1], &portno);
 	if (ret < 0) {

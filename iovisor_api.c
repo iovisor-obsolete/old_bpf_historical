@@ -402,6 +402,7 @@ int init_iovisor(void)
 	struct genlmsghdr *genl;
 	struct ovs_header *ovs;
 	uint32_t val;
+	unsigned int opt = 1;
 
         ret = genl_lookup_family(OVS_DATAPATH_FAMILY, &dp_family_id);
         if (ret)
@@ -445,6 +446,11 @@ int init_iovisor(void)
 	/* open upcall socket */
 	ch_sock = mnl_socket_open(NETLINK_GENERIC);
 	if (ch_sock == NULL) {
+		return -errno;
+	}
+
+	if (mnl_socket_setsockopt(ch_sock, NETLINK_NO_ENOBUFS, &opt,
+				  sizeof(opt)) < 0) {
 		return -errno;
 	}
 
@@ -696,6 +702,7 @@ int register_plum(int *plum_id, struct bpf_insn insns[], uint32_t insns_sz,
 
 	mnl_attr_put(nlh, OVS_BPF_ATTR_PLUM, sizeof(image), &image);
 	mnl_attr_put_u32(nlh, OVS_BPF_ATTR_UPCALL_PID, ch_portid);
+	mnl_attr_put_u32(nlh, OVS_BPF_ATTR_PLUM_ID, 0);
 
 	ret = mnl_socket_sendto(sock, nlh, nlh->nlmsg_len);
 	if (ret < 0)
@@ -1315,6 +1322,11 @@ int channel_push(uint32_t plum_id, uint32_t port_id, uint8_t *packet,
 
 	mnl_attr_put_u32(nlh, OVS_BPF_ATTR_PLUM_ID, plum_id);
 	mnl_attr_put_u32(nlh, OVS_BPF_ATTR_PORT_ID, port_id);
+	mnl_attr_put_u32(nlh, OVS_BPF_ATTR_FWD_PLUM_ID, 0);
+	mnl_attr_put_u32(nlh, OVS_BPF_ATTR_ARG1, 0);
+	mnl_attr_put_u32(nlh, OVS_BPF_ATTR_ARG2, 0);
+	mnl_attr_put_u32(nlh, OVS_BPF_ATTR_ARG3, 0);
+	mnl_attr_put_u32(nlh, OVS_BPF_ATTR_ARG4, 0);
 	mnl_attr_put_u32(nlh, OVS_BPF_ATTR_DIRECTION, OVS_BPF_IN_DIR);
 	mnl_attr_put(nlh, OVS_BPF_ATTR_PACKET, len, packet);
 

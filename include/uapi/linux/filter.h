@@ -71,6 +71,7 @@ struct bpf_table {
 
 enum bfp_table_type {
 	BPF_TABLE_HASH = 1,
+	BPF_TABLE_LPM
 };
 
 struct bpf_image {
@@ -82,6 +83,10 @@ struct bpf_image {
 	struct bpf_insn __user  *insns;
 	struct bpf_table __user *tables;
 };
+
+/* maximum number of insns and tables in a BPF program */
+#define MAX_BPF_INSNS 4096
+#define MAX_BPF_TABLES 64
 
 /* pointer to bpf_context is the first and only argument to BPF program
  * its definition is use-case specific */

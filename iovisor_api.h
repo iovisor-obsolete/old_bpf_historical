@@ -90,6 +90,15 @@ typedef struct {
         uint16_t port_id;
 } __attribute__((aligned(8))) tun2port_leaf;
 
+typedef struct {
+	uint32_t plen;
+	uint32_t prefix;
+} rtable_key;
+
+typedef struct {
+	uint16_t port_id;
+} __attribute__((aligned(8))) rtable_leaf;
+
 int init_iovisor(void);
 int lookup_port(const char *name, int *portno);
 int add_port(const char *name, int *portno, int vport_type);

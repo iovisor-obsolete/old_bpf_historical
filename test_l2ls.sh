@@ -35,6 +35,7 @@
 #
 ###############################################################################
 
+echo "Test two NS with L2LS inbetween..."
 . test_helpers.sh
 
 for DP in `seq 1 2`
@@ -44,7 +45,7 @@ do
   ns_run_cmd ${TMP_DIR} ns$DP "ifconfig eth0 10.1.1.$DP"
 done
 
-ns_run_cmd ${TMP_DIR} ns1 "iperf -s" &
+ns_run_cmd ${TMP_DIR} ns1 "iperf -s -xSCD" &
 sleep 0.1
 
 sudo ./l2ls-ctl addbr
@@ -52,7 +53,7 @@ sudo ./l2ls-ctl addif ns1.eth0.se
 sudo ./l2ls-ctl addif ns2.eth0.se
 
 echo "Starting iperf through BPF mini bridge"
-ns_run_cmd_2 ${TMP_DIR} ns2 "iperf -c 10.1.1.1 -t 2"
+ns_run_cmd_2 ${TMP_DIR} ns2 "iperf -c 10.1.1.1 -t 1 -xSC"
 ./l2ls-ctl showmac
 
 quit 0

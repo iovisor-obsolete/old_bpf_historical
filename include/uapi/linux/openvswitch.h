@@ -534,6 +534,12 @@ enum ovs_bpf_attr {
 	OVS_BPF_ATTR_REPLICATOR_ID, /* u32 replicator_id */
 	OVS_BPF_ATTR_PACKET,        /* packet (opaque data) */
 	OVS_BPF_ATTR_DIRECTION,     /* u32 direction */
+	OVS_BPF_ATTR_FWD_PLUM_ID,   /* u32 fwd_plum_id */
+	OVS_BPF_ATTR_ARG1,          /* u32 arg1 */
+	OVS_BPF_ATTR_ARG2,          /* u32 arg2 */
+	OVS_BPF_ATTR_ARG3,          /* u32 arg3 */
+	OVS_BPF_ATTR_ARG4,          /* u32 arg4 */
+	OVS_BPF_ATTR_DISRUPTIVE,    /* u32 disruptive */
 	__OVS_BPF_ATTR_MAX
 };
 
@@ -541,7 +547,8 @@ enum ovs_bpf_attr {
 
 enum ovs_bpf_channel_push_direction {
 	OVS_BPF_OUT_DIR,
-	OVS_BPF_IN_DIR
+	OVS_BPF_IN_DIR,
+	OVS_BPF_FWD_TO_PLUM
 };
 
 struct ovs_bpf_port_stats {
@@ -573,7 +580,7 @@ struct bpf_context {
 	__u32 arg4;
 	__u16 vlan_tag;
 	__u8 hw_csum;
-	__u8 rsvd;
+	__u8 capture;
 	struct bpf_ipv4_tun_key tun_key;
 };
 

@@ -43,19 +43,21 @@
 #
 ###############################################################################
 
-ENCAP=vxlan
+ENCAP=gre
+GSO=on
 
 for arg in "$@"; do
   case "$arg" in
     encap=*) ENCAP=${arg:6}
+      ;;
+    gso=*) GSO=${arg:4}
       ;;
   esac
 done
 
 . test_helpers.sh
 
-echo ${TMP_DIR}
-echo ${ENCAP}
+echo Using ${ENCAP} encap
 
 for DP in `seq 1 2`
 do
@@ -65,6 +67,7 @@ do
   ns_run_cmd ${TMP_DIR} ns$DP "ifconfig hook0 0 up"
   ns_create_ifc ${TMP_DIR} ns$DP eth1
   ns_run_cmd ${TMP_DIR} ns$DP "ifconfig eth1 10.1.2.$DP/24 mtu 1550 up"
+#  ns_run_cmd ${TMP_DIR} ns$DP "ethtool -K eth0 gso off tso off ufo off"
 done
 
 sudo brctl addbr nsbridge
@@ -73,15 +76,18 @@ sudo ifconfig ns1.eth1.se mtu 1550 up
 sudo ifconfig ns2.eth1.se mtu 1550 up
 sudo brctl addif nsbridge ns1.eth1.se
 sudo brctl addif nsbridge ns2.eth1.se
+if [ $GSO != "on" ]; then
+  sudo ethtool -K ns1.eth1.se gso off tso off ufo off
+  sudo ethtool -K ns2.eth1.se gso off tso off ufo off
+fi
 
 for DP in `seq 1 2`
 do
-/usr/sbin/vcmd -c ${TMP_DIR}/ns$DP.ctl -- ./l2ls-ctl addbr
-ns_run_cmd ${TMP_DIR} ns$DP "./l2ls-ctl addif hook0"
+  ns_run_cmd ${TMP_DIR} ns$DP "./l2ls-ctl addbr"
+  ns_run_cmd ${TMP_DIR} ns$DP "./l2ls-ctl addif hook0"
 done
 ns_run_cmd ${TMP_DIR} ns1 "./l2ls-ctl addtun ${ENCAP} 10.1.2.2 1"
 ns_run_cmd ${TMP_DIR} ns2 "./l2ls-ctl addtun ${ENCAP} 10.1.2.1 1"
-sleep 0.2
 
 ns_run_cmd ${TMP_DIR} ns1 "iperf -s" &
 sleep 0.2
@@ -89,5 +95,8 @@ sleep 0.2
 echo "Starting iperf through BPF mini bridge"
 ns_run_cmd_2 ${TMP_DIR} ns2 "iperf -c 10.1.1.1 -i 5 -t 10"
 ns_run_cmd_2 ${TMP_DIR} ns2 "./l2ls-ctl showmac"
+
+sudo ifconfig nsbridge down
+sudo brctl delbr nsbridge
 
 quit 0
