@@ -22,6 +22,9 @@
 #include <linux/netdevice.h>
 #include <linux/etherdevice.h>
 #include <linux/ethtool.h>
+/** begin_fixme **/
+#include <linux/netdev_features.h>
+/** end_fixme **/
 #include <linux/skbuff.h>
 
 #include <net/dst.h>
