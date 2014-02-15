@@ -1,0 +1,8 @@
+*.c
+*.o
+.*.cmd
+.tmp_versions
+Module.symvers
+modules.order
+iovisor.dbg
+iovisor.ko
