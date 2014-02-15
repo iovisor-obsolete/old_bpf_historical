@@ -299,7 +299,13 @@ static struct genl_family dp_packet_genl_family = {
 	.version = OVS_PACKET_VERSION,
 	.maxattr = OVS_PACKET_ATTR_MAX,
 	.netnsok = true,
+/** begin_fixme **/
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,10,0)
+/** end_fixme **/
 	.parallel_ops = true,
+/** begin_fixme **/
+#endif
+/** end_fixme **/
 };
 
 static int queue_userdata(struct net *net, int dp_ifindex,
@@ -1058,7 +1064,13 @@ static struct genl_family dp_flow_genl_family = {
 	.version = OVS_FLOW_VERSION,
 	.maxattr = OVS_FLOW_ATTR_MAX,
 	.netnsok = true,
+/** begin_fixme **/
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,10,0)
+/** end_fixme **/
 	.parallel_ops = true,
+/** begin_fixme **/
+#endif
+/** end_fixme **/
 };
 
 static struct genl_multicast_group ovs_dp_flow_multicast_group = {
@@ -1641,7 +1653,13 @@ static struct genl_family dp_datapath_genl_family = {
 	.version = OVS_DATAPATH_VERSION,
 	.maxattr = OVS_DP_ATTR_MAX,
 	.netnsok = true,
+/** begin_fixme **/
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,10,0)
+/** end_fixme **/
 	.parallel_ops = true,
+/** begin_fixme **/
+#endif
+/** end_fixme **/
 };
 
 static struct genl_multicast_group ovs_dp_datapath_multicast_group = {
@@ -2022,7 +2040,13 @@ struct genl_family dp_vport_genl_family = {
 	.version = OVS_VPORT_VERSION,
 	.maxattr = OVS_VPORT_ATTR_MAX,
 	.netnsok = true,
+/** begin_fixme **/
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,10,0)
+/** end_fixme **/
 	.parallel_ops = true,
+/** begin_fixme **/
+#endif
+/** end_fixme **/
 };
 
 struct genl_multicast_group ovs_dp_vport_multicast_group = {
@@ -2496,6 +2520,11 @@ static struct pernet_operations ovs_net_ops = {
 	.size = sizeof(struct ovs_net),
 };
 
+/** begin_fixme **/
+void radix_tree_init(void);
+void radix_tree_cleanup(void);
+DEFINE_COMPAT_PNET_REG_FUNC(device);
+/** end_fixme **/
 static int __init dp_init(void)
 {
 	int err;
@@ -2503,6 +2532,10 @@ static int __init dp_init(void)
 	BUILD_BUG_ON(sizeof(struct ovs_skb_cb) > FIELD_SIZEOF(struct sk_buff, cb));
 
 	pr_info("Open vSwitch switching datapath\n");
+/** begin_fixme **/
+	pr_info("version " GIT_VERSION "\n");
+	radix_tree_init();
+/** end_fixme **/
 
 	err = ovs_flow_init();
 	if (err)
@@ -2528,6 +2561,9 @@ static int __init dp_init(void)
 	if (err < 0)
 		goto error_unreg_notifier;
 
+/** begin_fixme **/
+	if (0)
+/** end_fixme **/
 	schedule_delayed_work(&rehash_flow_wq, REHASH_FLOW_INTERVAL);
 
 	return 0;
@@ -2548,6 +2584,9 @@ error:
 
 static void dp_cleanup(void)
 {
+/** begin_fixme **/
+	if (0)
+/** end_fixme **/
 	cancel_delayed_work_sync(&rehash_flow_wq);
 	dp_unregister_genl(ARRAY_SIZE(dp_genl_families));
 	unregister_netdevice_notifier(&ovs_dp_device_notifier);
@@ -2556,6 +2595,9 @@ static void dp_cleanup(void)
 	ovs_bpf_exit();
 	ovs_vport_exit();
 	ovs_flow_exit();
+/** begin_fixme **/
+	radix_tree_cleanup();
+/** end_fixme **/
 }
 
 module_init(dp_init);

@@ -27,7 +27,13 @@ struct genl_family dp_bpf_genl_family = {
 	.version = OVS_BPF_VERSION,
 	.maxattr = OVS_BPF_ATTR_MAX,
 	.netnsok = true,
+/** begin_fixme **/
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,10,0)
+/** end_fixme **/
 	.parallel_ops = true,
+/** begin_fixme **/
+#endif
+/** end_fixme **/
 };
 
 static const struct nla_policy bpf_policy[OVS_BPF_ATTR_MAX + 1] = {

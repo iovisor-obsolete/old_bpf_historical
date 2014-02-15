@@ -1893,6 +1893,9 @@ void __init radix_tree_init(void)
 			SLAB_PANIC | SLAB_RECLAIM_ACCOUNT,
 			radix_tree_node_ctor);
 	radix_tree_init_maxindex();
+/** begin_fixme **/
+	if (0)
+/** end_fixme **/
 	hotcpu_notifier(radix_tree_callback, 0);
 }
 

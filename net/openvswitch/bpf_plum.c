@@ -286,6 +286,11 @@ void plum_update_stats(struct plum *plum, u32 port_id, struct sk_buff *skb,
 	u64_stats_update_end(&stats->syncp);
 }
 
+/** begin_fixme **/
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
+extern int offload_send(struct vport *vport, struct sk_buff *skb);
+#endif
+/** end_fixme **/
 
 /* called by execute_plums() to execute BPF program
  * or send it out of vport if destination plum_id is zero
@@ -329,6 +334,13 @@ static void __bpf_forward(struct bpf_dp_context *ctx, u32 dest)
 			return;
 		}
 
+/** begin_fixme **/
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
+		offload_send(vport, ctx->skb);
+#else
+		ovs_vport_send(vport, ctx->skb);
+#endif
+/** end_fixme **/
 	} else {
 		ctx->context.port_id = port_id;
 		ctx->context.plum_id = plum_id;

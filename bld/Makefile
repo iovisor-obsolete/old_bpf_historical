@@ -61,9 +61,11 @@ all:
 	ln -sf $(BLD)/../compat/*.c .
 	ln -sf $(ORIG_SRC)/*.c .
 	$(MAKE) -C $(KOBJ) M=$(BLD) modules
+#	$(OBJCOPY) --only-keep-debug $(BLD)/iovisor.ko $(BLD)/iovisor.dbg
+#	$(OBJCOPY) --strip-debug $(BLD)/iovisor.ko
+#	$(OBJCOPY) --add-gnu-debuglink=$(BLD)/iovisor.dbg $(BLD)/iovisor.ko
 
 install:
-#	$(MAKE) -C $(KOBJ) M=$(BLD) modules_install
 	mkdir -p /lib/modules/`uname -r`/updates/dkms/
 	cp iovisor.ko /lib/modules/`uname -r`/updates/dkms/
 	depmod `uname -r`

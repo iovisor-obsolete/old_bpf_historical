@@ -14,6 +14,7 @@ namespaces connected by a switch.
 
 * test_l2ls_tun.sh - demonstrates distributed L2 learning switch functionality defining a Topology with
 two switches connected through Linux bridge and kernel vxlan/gre drivers.
+note: requires kernel 3.13+
 
 * l2ls.c - C code for BPF bridge
 
